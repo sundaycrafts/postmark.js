@@ -35,23 +35,24 @@ class WebFetch {
             const url = this.addSearchParams(new URL(path, this.baseURL), params);
             const response = await fetch(`${url.href}`, {
                 method,
+                body: data ? JSON.stringify(data) : undefined,
                 headers,
                 signal: controller.signal
             })
             clearTimeout(id);
 
-            const data = await response.json();
+            const json = await response.json();
 
             if (!this.validateStatus(response.status)) {
                 return {
                     success: false,
-                    error: new PostmarkError("Request failed", typeof data.ErrorCode === "number" && data.ErrorCode, response.status)
+                    error: new PostmarkError("Request failed", typeof json.ErrorCode === "number" && json.ErrorCode, response.status)
                 }
             }
 
             return {
                 success: true,
-                data: data.data as D
+                data: json as D
             }
         } catch (error) {
             /**
