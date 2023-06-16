@@ -1,6 +1,6 @@
 {
-  "name": "postmark",
-  "description": "Official Node.js client library for the Postmark HTTP API - https://www.postmarkapp.com",
+  "name": "@sundaycrafts/postmark",
+  "description": "Unofficial Node.js client library for the Postmark HTTP API - https://www.postmarkapp.com",
   "license": "MIT",
   "tags": [
     "email",
@@ -9,7 +9,7 @@
     "sending",
     "transactional"
   ],
-  "version": "3.0.18",
+  "version": "3.0.19",
   "author": "Igor Balos",
   "contributors": [
     "Igor Balos",
@@ -50,10 +50,10 @@
   "homepage": "http://ActiveCampaign.github.io/postmark.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ActiveCampaign/postmark.js.git"
+    "url": "https://github.com/sundaycrafts/postmark.js.git"
   },
   "bugs": {
-    "url": "https://github.com/ActiveCampaign/postmark.js/issues"
+    "url": "https://github.com/sundaycrafts/postmark.js/issues"
   },
   "precommit": [
     "compile",
@@ -76,8 +76,5 @@
     "tslint": "^6.1.3",
     "typedoc": "^0.22.11",
     "typescript": "4.5.5"
-  },
-  "dependencies": {
-    "axios": "^0.25.0"
   }
 }
