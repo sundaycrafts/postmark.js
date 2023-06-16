@@ -1,6 +1,6 @@
-import { ErrorHandler } from "./errors/ErrorHandler";
+import {ErrorHandler} from "./errors/ErrorHandler";
 import {Callback, ClientOptions, FilteringParameters, HttpClient} from "./models";
-import {AxiosHttpClient} from "./HttpClient"
+import {WebFetchHTTPClient} from "./HttpClient"
 import {Errors} from "../index";
 
 const packageJson = require("../../package.json");
@@ -23,7 +23,7 @@ export default abstract class BaseClient {
         this.token = token.trim();
         this.authHeader = authHeader;
         this.clientVersion = CLIENT_VERSION;
-        this.httpClient = new AxiosHttpClient(configOptions);
+        this.httpClient = new WebFetchHTTPClient(configOptions);
     }
 
     public setClientOptions(configOptions: ClientOptions.Configuration): void {
@@ -31,7 +31,7 @@ export default abstract class BaseClient {
     }
 
     public getClientOptions(): ClientOptions.Configuration {
-      return this.httpClient.clientOptions;
+        return this.httpClient.clientOptions;
     }
 
     /**
@@ -106,12 +106,15 @@ export default abstract class BaseClient {
     /**
      * JSON object with default headers sent by HTTP request.
      */
-    private getComposedHttpRequestHeaders(): any {
-        return {
-            [this.authHeader]: this.token,
-            "Accept": "application/json",
-            "User-Agent": `Postmark.JS - ${this.clientVersion}`,
-        };
+    private getComposedHttpRequestHeaders(): Headers {
+        return [
+            [this.authHeader, this.token],
+            ["Accept", "application/json"],
+            ["User-Agent", `Postmark.JS - ${this.clientVersion}`]
+        ].reduce((hs, header) => {
+            hs.append(header[0], header[1]);
+            return hs;
+        }, new Headers());
     }
 
     /**

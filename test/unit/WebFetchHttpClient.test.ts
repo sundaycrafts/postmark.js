@@ -1,13 +1,13 @@
 import {expect} from "chai";
 import "mocha";
 import * as sinon from "sinon";
-import {AxiosHttpClient} from "../../src/client/HttpClient";
+import {WebFetchHTTPClient} from "../../src/client/HttpClient";
 import {ClientOptions} from "../../src/client/models";
 import {Errors} from "../../src";
 
 describe("AxiosHttpClient", () => {
     let sandbox: sinon.SinonSandbox;
-    const httpClient = new AxiosHttpClient();
+    const httpClient = new WebFetchHTTPClient();
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
@@ -20,7 +20,7 @@ describe("AxiosHttpClient", () => {
     it("default error", () => {
         sandbox.stub(httpClient.client, "request").rejects(new Error("test"));
 
-        return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+        return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
             throw Error(`Should not be here with result: ${result}`);
         }, (error) => {
             expect(error).to.be.instanceOf(Errors.PostmarkError);
@@ -35,7 +35,7 @@ describe("AxiosHttpClient", () => {
         const errorToThrow: any = { stack: 'Hello stack' };
         sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-        return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+        return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
             throw Error(`Should not be here with result: ${result}`);
         }, (error) => {
             expect(error).to.be.an.instanceof(Errors.PostmarkError);
@@ -52,7 +52,7 @@ describe("AxiosHttpClient", () => {
         it("401", () => {
             sandbox.stub(httpClient.client, "request").rejects(buildAxiosFormatError(401));
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.InvalidAPIKeyError);
@@ -62,7 +62,7 @@ describe("AxiosHttpClient", () => {
         it("404", () => {
             sandbox.stub(httpClient.client, "request").rejects(buildAxiosFormatError(404));
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.PostmarkError);
@@ -72,7 +72,7 @@ describe("AxiosHttpClient", () => {
         it("422", () => {
             sandbox.stub(httpClient.client, "request").rejects(buildAxiosFormatError(422));
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.ApiInputError);
@@ -84,7 +84,7 @@ describe("AxiosHttpClient", () => {
             errorToThrow.response.data.ErrorCode=300
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.InvalidEmailRequestError);
@@ -96,7 +96,7 @@ describe("AxiosHttpClient", () => {
             errorToThrow.response.data.ErrorCode=406
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.InactiveRecipientsError);
@@ -107,7 +107,7 @@ describe("AxiosHttpClient", () => {
             const errorToThrow = buildAxiosFormatError(429)
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.RateLimitExceededError);
@@ -118,7 +118,7 @@ describe("AxiosHttpClient", () => {
             const errorToThrow = buildAxiosFormatError(500)
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.InternalServerError);
@@ -129,7 +129,7 @@ describe("AxiosHttpClient", () => {
             const errorToThrow = buildAxiosFormatError(500)
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.InternalServerError);
@@ -140,7 +140,7 @@ describe("AxiosHttpClient", () => {
             const errorToThrow = buildAxiosFormatError(-1)
             sandbox.stub(httpClient.client, "request").rejects(errorToThrow);
 
-            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, {}).then((result) => {
+            return httpClient.httpRequest(ClientOptions.HttpMethod.GET, "", {}, null, new Headers()).then((result) => {
                 throw Error(`Should not be here with result: ${result}`);
             }, (error) => {
                 expect(error).to.be.instanceOf(Errors.UnknownError);

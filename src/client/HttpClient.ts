@@ -19,7 +19,7 @@ class WebFetch {
         this.validateStatus = validateStatus;
     }
 
-    public async request<D>({method, params, url: path}: {
+    public async request<D>({method, params, url: path, data, headers}: {
         url: string,
         method: ClientOptions.HttpMethod,
         data: object | null,
@@ -29,14 +29,14 @@ class WebFetch {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), this.timeout);
 
+        headers.append('Content-Type', "application/json");
+
         try {
             const url = this.addSearchParams(new URL(path, this.baseURL), params);
             const response = await fetch(`${url.href}`, {
                 method,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-                , signal: controller.signal
+                headers,
+                signal: controller.signal
             })
             clearTimeout(id);
 
@@ -76,7 +76,7 @@ class WebFetch {
 }
 
 
-export class AxiosHttpClient extends HttpClient {
+export class WebFetchHTTPClient extends HttpClient {
     public client!: WebFetch;
     private errorHandler: ErrorHandler;
 
@@ -113,7 +113,7 @@ export class AxiosHttpClient extends HttpClient {
      * @param requestHeaders
      */
     public async httpRequest<T>(method: ClientOptions.HttpMethod, path: string, queryParameters: ({} | object),
-                                body: (null | object), requestHeaders: any): Promise<T> {
+                                body: (null | object), requestHeaders: Headers): Promise<T> {
 
         const res = await this.client.request<T>({
             method,
